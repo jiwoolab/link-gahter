@@ -842,7 +842,7 @@ function dist(x1,y1,x2,y2){return Math.sqrt((x1-x2)**2+(y1-y2)**2);}
 
 /* ── 소켓 ── */
 function connectSocket(){
-  socket=io({reconnection:true});
+  socket=io('https://link-gahter-production.up.railway.app',{reconnection:true,transports:['websocket','polling']});
   socket.on('init',({self,players,chatLog})=>{
     selfId=self.id;myRoom=self.room||1;
     const s=pushOut(self.x,self.y);lp.x=s.x;lp.y=s.y;
