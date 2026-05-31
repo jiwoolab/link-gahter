@@ -1,0 +1,14 @@
+{
+  "name": "internet-safety-gather",
+  "version": "1.0.0",
+  "description": "게더타운 스타일 인터넷 안전 교육 멀티플레이 웹게임",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  }
+}
