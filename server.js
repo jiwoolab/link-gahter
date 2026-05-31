@@ -5,7 +5,14 @@ const path     = require('path');
 
 const app    = express();
 const server = http.createServer(app);
-const io     = new Server(server, { cors:{ origin:'*', methods:['GET','POST'] } });
+const io = new Server(server, {
+  cors: { origin: '*', methods: ['GET','POST'] },
+  /* 호스팅거 WebSocket 차단 시 polling으로 자동 전환 */
+  transports: ['websocket', 'polling'],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000,
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 const MAX = 20;
@@ -37,7 +44,7 @@ io.on('connection', socket => {
     socket.emit('init', {
       self: players[socket.id],
       players: Object.values(players).filter(p=>p.id!==socket.id&&p.room===1),
-      chatLog,
+      chatLog:[],
     });
     socket.to('room-1').emit('player_joined', players[socket.id]);
     io.emit('room_count', Object.keys(players).length);
@@ -78,7 +85,7 @@ io.on('connection', socket => {
     const p = players[socket.id]; if(!p) return;
     const text = safe(msg,40); if(!text) return;
     const entry = {id:socket.id, name:p.name, avatar:p.avatar, msg:text, ts:Date.now()};
-    chatLog.push(entry); if(chatLog.length>50) chatLog.shift();
+    chatLog.push(entry); if(chatLog.length>20) chatLog.shift();
     io.to(`room-${p.room}`).emit('chat_msg', entry);
   });
 
